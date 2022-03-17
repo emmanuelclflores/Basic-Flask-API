@@ -17,12 +17,12 @@ def retrieve_params():
             end_discount_time =  params["end_discount_time"]   
             discount = params["discount"]  
             
-             # Validate time params        
+            # Validate time params        
             # Validate format and convert to stripped datetime objects
             start_discount_time = datetime.strptime(start_discount_time, "%H:%M").time()
             end_discount_time = datetime.strptime(end_discount_time, "%H:%M").time()
             
-            # Validate that start_discount_time < end_discount_time
+            # Validate that start_discount_time <= end_discount_time
             if start_discount_time > end_discount_time:
                 raise Exception("Start time must be before end time")
                         
@@ -47,12 +47,9 @@ def retrieve_params():
 
 @app.route('/api/<barcode>')
 def get_discounted_price(barcode):
-     # Accept a barcode
-    
-    discount = 0.1
-    # Discount 10% of any products
-    
-    # Retreve params
+    # Accept a barcode
+        
+    # Retreve params from ENV file
     params = retrieve_params()  
     start_discount_time =  params["start_discount_time"]
     end_discount_time =  params["end_discount_time"]
@@ -68,7 +65,6 @@ def get_discounted_price(barcode):
     if current_time >= start_discount_time and current_time <= end_discount_time:        
         # Apply discount
         product['data'][0]['price'] *= 1 - discount   
-    
     # Otherwise, do not apply discount (display as is directly from store API)
     
     return product
